@@ -12,13 +12,13 @@ sleep_time = 3
 driver = webdriver.Chrome(ChromeDriverManager().install())
 
 # navigate to the website
-driver.get("https://subslikescript.com/movies")
+driver.get(url)
 sleep(sleep_time)
 
 # find the ul element with scripts-list class
 scripts_list = driver.find_element(By.CLASS_NAME, "scripts-list")
 
-# find all the a tags in the ul element and print their text
+# find all the "a" tags in the ul element and print their text
 for a_tag in scripts_list.find_elements(By.TAG_NAME, "a"):
     print(a_tag.text)
 
