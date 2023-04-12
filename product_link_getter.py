@@ -2,7 +2,21 @@ from time import sleep
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
+
+# Disabling images
+# TODO: disable css as well
+options = Options()
+options.headless = True
+
+chrome_options = webdriver.ChromeOptions()
+# this will disable image loading
+chrome_options.add_argument('--blink-settings=imagesEnabled=false')
+# or alternatively we can set direct preference:
+chrome_options.add_experimental_option(
+    "prefs", {"profile.managed_default_content_settings.images": 2}
+)
 
 # Initializing variables
 url = "https://www.amazon.com/s?k=gaming+laptop&ref=nb_sb_noss"
@@ -11,23 +25,23 @@ next_page = "s-pagination-next"
 last_url = ""
 
 # Set up the webdriver
-driver = webdriver.Chrome(ChromeDriverManager().install())
+driver = webdriver.Chrome(ChromeDriverManager().install(), options=options, chrome_options=chrome_options)
 driver.get(url)
 sleep(sleep_time)
 
+# We go through pages of search result
 try:
-    while driver.find_element(By.CLASS_NAME, next_page):
-        if last_url == driver.current_url:
-            break
+    with open("page_links.txt", "w") as file:
+        while driver.find_element(By.CLASS_NAME, next_page):
+            if last_url == driver.current_url:
+                break
 
-        temp = driver.find_element(By.CLASS_NAME, next_page)
-        print(driver.current_url)
-        last_url = driver.current_url
-        temp.click()
-        sleep(sleep_time)
-except:
-    print("finish or not found")
-
+            print(driver.current_url, file=file)
+            last_url = driver.current_url
+            driver.find_element(By.CLASS_NAME, next_page).click()
+            sleep(sleep_time)
+except (EOFError, IOError) as err:
+    print(err)
 
 # Close the webdriver
-driver.quit()
+# driver.quit()
