@@ -53,25 +53,31 @@ class AmazonScraper:
 
     def _get_product_information(self):
         index_folder = self._get_or_create_index_folder()
+        i = 1
 
         with open("product_links.txt", "r") as file:
             for line in file.readlines():
-                if line != "None\n":
-                    self.driver.get(line)
-                    sleep(SLEEP_TIME)
+                if line == "None\n":
+                    continue
 
-                    laptop_title = self.driver.find_element(By.XPATH,
-                                                            """//*[@id="poExpander"]/div[1]/div/table/tbody/tr[2]/td[2]/span""").text
-                    laptop_model = self.driver.find_element(By.XPATH, """// *[ @ id = "productTitle"]""").text
+                self.driver.get(line)
+                sleep(SLEEP_TIME)
+
+                laptop_model = self.driver.find_element(By.XPATH, """// *[ @ id = "productTitle"]""").text
+                laptop_description = self.driver.find_element(By.XPATH, """//*[@id="feature-bullets"]""").text
+                try:
                     laptop_price = self.driver.find_element(By.XPATH,
                                                             """//*[@id="corePrice_feature_div"]/div/span[1]/span[2]/span[2]""").text
-                    laptop_description = self.driver.find_element(By.XPATH, """//*[@id="feature-bullets"]""").text
+                except:
+                    laptop_price = "Not available!"
 
-                    file_path = os.path.join(index_folder, f"file_{laptop_title}.txt")
-                    with open(file_path, "w") as laptop_info:
-                        print(laptop_model, file=laptop_info)
-                        print(laptop_price, file=laptop_info)
-                        print(laptop_description, file=laptop_info)
+                file_path = os.path.join(index_folder, f"file_{i}.txt")
+                with open(file_path, "w") as laptop_info:
+                    print(laptop_model, file=laptop_info)
+                    print(self.driver.current_url, file=laptop_info)
+                    print(laptop_price, file=laptop_info)
+                    print(laptop_description, file=laptop_info)
+                i += 1
 
     def _get_or_create_index_folder(self) -> str:
         index_folder = os.path.join(os.getcwd(), "index")
@@ -84,7 +90,7 @@ class AmazonScraper:
     def start(self, url) -> None:
         self.driver.get(url)
         sleep(SLEEP_TIME)
-        self._save_product_links()
+        # self._save_product_links()
         self._get_product_information()
 
 
