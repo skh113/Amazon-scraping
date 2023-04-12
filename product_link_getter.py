@@ -31,12 +31,17 @@ sleep(sleep_time)
 
 # We go through pages of search result
 try:
-    with open("page_links.txt", "w") as file:
+    with open("product_links.txt", "w") as file:
         while driver.find_element(By.CLASS_NAME, next_page):
+            # checking if it's the last page of search results
             if last_url == driver.current_url:
                 break
 
-            print(driver.current_url, file=file)
+            search_results = driver.find_element(By.CLASS_NAME, "s-search-results")
+            for item in search_results.find_elements(By.CLASS_NAME, "s-no-outline"):
+                print(item.get_attribute("href"), file=file)
+
+            # Going to next page
             last_url = driver.current_url
             driver.find_element(By.CLASS_NAME, next_page).click()
             sleep(sleep_time)
