@@ -7,17 +7,20 @@ from webdriver_manager.chrome import ChromeDriverManager
 # Initializing variables
 url = "https://www.amazon.com/s?k=gaming+laptop&ref=nb_sb_noss"
 sleep_time = 3
+next_page = "s-pagination-next"
 
 # Set up the webdriver
 driver = webdriver.Chrome(ChromeDriverManager().install())
 driver.get(url)
 sleep(sleep_time)
 
+
 # get the search results
 search_results = driver.find_element(By.CLASS_NAME, "s-search-results")
 laptop_titles = search_results.find_elements(By.TAG_NAME, "h2")
-laptop_prices = search_results.find_elements(By.CLASS_NAME, "a-price-whole")
+laptop_prices = search_results.find_elements(By.CLASS_NAME, "a-offscreen")
 laptop_rate = search_results.find_elements(By.CLASS_NAME, "a-icon-alt")
+
 
 laptops = []
 for item in laptop_titles:
