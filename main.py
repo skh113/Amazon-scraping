@@ -90,7 +90,7 @@ class AmazonScraper:
     def start(self, url) -> None:
         self.driver.get(url)
         sleep(SLEEP_TIME)
-        # self._save_product_links()
+        self._save_product_links()
         self._get_product_information()
 
 

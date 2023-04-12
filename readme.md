@@ -12,3 +12,8 @@ python main.py
 ```
 
 ## Results will be in index folder
+### in case you want to convert .txt files to csv
+
+```console
+python txt_2_csv.py
+```
